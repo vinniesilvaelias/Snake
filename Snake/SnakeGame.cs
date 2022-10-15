@@ -8,6 +8,10 @@ namespace Snake
 {
     public class SnakeGame
     {
+        const char WALL = '#';
+        const char HEAD_SNAKE = '@';
+        const char EMPTY_POSITION = ' ';
+        const char FRUIT = '*';
         public char[,] Board { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
@@ -96,7 +100,7 @@ namespace Snake
                 {
                     if (IsWall(j, i))
                     {
-                        Board[j, i] = '#';
+                        Board[j, i] = WALL;
                     }
                     else if (IsFruit(j, i))
                     {
@@ -108,7 +112,7 @@ namespace Snake
                     }
                     else
                     {
-                        Board[j, i] = ' ';
+                        Board[j, i] = EMPTY_POSITION;
                     }
                 }
             }
@@ -152,7 +156,7 @@ namespace Snake
             var xFruit = Random.Next(1, Width - 1);
             var yFruit = Random.Next(1, Height - 1);
 
-            Fruit = new Point(xFruit, yFruit, '*');
+            Fruit = new Point(xFruit, yFruit, FRUIT);
         }
         public void InitBoard(int width, int height)
         {
@@ -165,14 +169,7 @@ namespace Snake
             {
                 for (int j = 0; j < Width; j++)
                 {
-                    if (i == 0 || i == Height - 1 || j == 0 || j == Width - 1)
-                    {
-                        Board[j, i] = '#';
-                    }
-                    else
-                    {
-                        Board[j, i] = ' ';
-                    }
+                    Board[j, i] = IsWall(j, i) ? WALL : EMPTY_POSITION;
                 }
             }
         }
