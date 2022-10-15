@@ -123,9 +123,7 @@ namespace Snake
         }
         public bool IsWall(int x, int y)
         {
-            var result = y == 0 || y == Height - 1 || x == 0 || x == Width - 1;
-
-            return result;
+            return y == 0 || y == Height - 1 || x == 0 || x == Width - 1; ;
         }
         public bool IsSnake(int x, int y)
         {
