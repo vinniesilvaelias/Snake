@@ -8,13 +8,16 @@ namespace Snake
 {
     public class Snake
     {
-        public Point Head { get; set; }
+        //public Point Head { get; set; }
         public ConsoleKey Direction { get; set; }
-        //public IList<Point> Body{ get; set; }
-
+        public IList<Point> Body { get; set; }
         public Snake(int x, int y)
         {
-            Head = new Point(x, y, '@');
+            Body = new List<Point>
+            {
+                new Point(x, y, '@')
+            };
+
             Direction = ConsoleKey.UpArrow;
         }
         public void Move()
@@ -40,22 +43,60 @@ namespace Snake
         }
         public void Up()
         {
-            this.Head.Y--;
+            var newHead = new Point(Body[0].X, Body[0].Y - 1, Body[0].Value);
+            Body.Insert(0, newHead);
+            Body.Remove(Body.Last());
         }
 
         public void Down()
         {
-            this.Head.Y++;
+            var newHead = new Point(Body[0].X, Body[0].Y + 1, Body[0].Value);
+            Body.Insert(0, newHead);
+            Body.Remove(Body.Last());
         }
 
         public void Left()
         {
-            this.Head.X--;
+            var newHead = new Point(Body[0].X -1, Body[0].Y, Body[0].Value);
+            Body.Insert(0, newHead);
+            Body.Remove(Body.Last());
         }
 
         public void Right()
         {
-            this.Head.X++;
+            var newHead = new Point(Body[0].X + 1, Body[0].Y, Body[0].Value);
+            Body.Insert(0, newHead);
+            Body.Remove(Body.Last());
+        }
+
+        public void Update(int width, int height)
+        {
+            var point = new Point(Body.Last());
+
+            if (point.X == width -2)
+            {
+                if (Body.Count > 1)
+                {
+                    point.Y++;
+                }
+                else
+                {
+                    point.X--;
+                }
+            }
+            else if (point.Y == height -2)
+            {
+                if (Body.Count > 1)
+                {
+                    point.Y++;
+                }
+                else
+                {
+                    point.X--;
+                }
+            }
+
+            Body.Insert(Body.Count - 1, point);
         }
     }
 }

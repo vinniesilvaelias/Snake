@@ -17,5 +17,12 @@ namespace Snake
             Y = y;
             Value = value;
         }
+
+        public Point(Point point)
+        {
+            this.X = point.X;
+            this.Y = point.Y;
+            this.Value = point.Value;
+        }
     }
 }

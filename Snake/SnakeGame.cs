@@ -8,10 +8,14 @@ namespace Snake
 {
     public class SnakeGame
     {
+        #region CONSTANTES
         const char WALL = '#';
         const char HEAD_SNAKE = '@';
         const char EMPTY_POSITION = ' ';
         const char FRUIT = '*';
+        #endregion
+
+        #region PROPRIETS
         public char[,] Board { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
@@ -20,6 +24,9 @@ namespace Snake
         public Random Random { get; set; }
         public int Score { get; set; }
         public bool IsGameOver { get; set; }
+        #endregion
+
+        #region CONSTRUCTOR
         public SnakeGame(int width, int height)
         {
             Random = new Random();
@@ -28,6 +35,8 @@ namespace Snake
             Snake = new Snake(width / 2, height / 2);
             Update();
         }
+        #endregion
+
         public void Run()
         {
             Update();
@@ -35,20 +44,15 @@ namespace Snake
             do
             {
                 Snake.Direction = WaitForNextMove();
-            } while (!IsGameOver);
+            } while (!IsWall(Snake.Body[0].X, Snake.Body[0].Y));
 
             Console.WriteLine("Game Over");
             PrintScore();
         }
         public ConsoleKey WaitForNextMove()
         {
-            while (!Console.KeyAvailable && !IsGameOver)
+            while (!Console.KeyAvailable && !IsWall(Snake.Body[0].X, Snake.Body[0].Y))
             {
-                if (IsWall(Snake.Head.X, Snake.Head.Y))
-                {
-                    IsGameOver = true;
-                }
-
                 PrintScore();
                 PrintBoard();
                 Snake.Move();
@@ -58,15 +62,17 @@ namespace Snake
 
             return NextValidMove(Console.ReadKey().Key);
         }
+
         public void UpdateFruitPosition()
         {
             InitFruit();
         }
         public void UpdateScore()
         {
-            if (Snake.Head.X == Fruit.X && Snake.Head.Y == Fruit.Y)
+            if (Snake.Body[0].X == Fruit.X && Snake.Body[0].Y == Fruit.Y)
             {
                 Score++;
+                Snake.Update(Width, Height);
                 UpdateFruitPosition();
             }
         }
@@ -106,15 +112,21 @@ namespace Snake
                     {
                         Board[j, i] = Fruit.Value;
                     }
-                    else if (IsSnake(j, i))
-                    {
-                        Board[j, i] = Snake.Head.Value;
-                    }
                     else
                     {
                         Board[j, i] = EMPTY_POSITION;
                     }
                 }
+            }
+            DrawSnake();
+        }
+        public void DrawSnake()
+        {
+            Board[Snake.Body[0].X, Snake.Body[0].Y] = Snake.Body[0].Value;
+
+            foreach (var point in Snake.Body)
+            {
+                Board[point.X, point.Y] = point.Value;
             }
         }
         public bool IsFruit(int x, int y)
@@ -123,11 +135,11 @@ namespace Snake
         }
         public bool IsWall(int x, int y)
         {
-            return y == 0 || y == Height - 1 || x == 0 || x == Width - 1; ;
+            return y == 0 || y == Height - 1 || x == 0 || x == Width - 1;
         }
         public bool IsSnake(int x, int y)
         {
-            return Snake.Head.X == x && Snake.Head.Y == y;
+            return Snake.Body[0].X == x && Snake.Body[0].Y == y;
         }
         public void PrintBoard()
         {
