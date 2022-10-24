@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Snake
+﻿namespace Snake
 {
     public class SnakeGame
     {
@@ -29,47 +23,90 @@ namespace Snake
         #region CONSTRUCTOR
         public SnakeGame(int width, int height)
         {
+            Init(width, height);
+        }
+
+        private void Init(int width, int height)
+        {
             Random = new Random();
             InitBoard(width, height);
             InitFruit();
             Snake = new Snake(width / 2, height / 2);
-            Update();
+            UpdateScene();
         }
         #endregion
 
         public void Run()
         {
-            Update();
+            UpdateScene();
+            var finish = false;
+            do
+            {
+                NextPlay();
+                Console.WriteLine("Game Over");
+                PrintScore();
+                finish = WaithForNextPlay();
+            } while (!finish);
+
+            End();
+        }
+
+        private void NextPlay()
+        {
+            if (Snake != null)
+            {
+                Init(Width, Height);
+                Score = 0;
+            }
 
             do
             {
                 Snake.Direction = WaitForNextMove();
-            } while (!IsWall(Snake.Body[0].X, Snake.Body[0].Y));
 
-            Console.WriteLine("Game Over");
-            PrintScore();
+            } while (!IsWall(Snake.Body[Snake.HEAD].X, Snake.Body[Snake.HEAD].Y));
+
         }
+
+        private void End()
+        {
+            Console.Clear();
+            Console.WriteLine("************************* Finish *************************");
+        }
+
+        private bool WaithForNextPlay()
+        {
+            return UserChoise();
+        }
+
+        private bool UserChoise()
+        {
+
+            Console.WriteLine("[1] - Quit [0] - Continue");
+            Console.Write(">>> ");
+
+            return int.Parse(Console.ReadLine()) == 1 ? true : false;
+        }
+
         public ConsoleKey WaitForNextMove()
         {
-            while (!Console.KeyAvailable && !IsWall(Snake.Body[0].X, Snake.Body[0].Y))
+            while (!Console.KeyAvailable && !IsWall(Snake.Body[Snake.HEAD].X, Snake.Body[Snake.HEAD].Y))
             {
                 PrintScore();
                 PrintBoard();
                 Snake.Move();
                 UpdateScore();
-                Update();
+                UpdateScene();
             }
 
             return NextValidMove(Console.ReadKey().Key);
         }
-
         public void UpdateFruitPosition()
         {
             InitFruit();
         }
         public void UpdateScore()
         {
-            if (Snake.Body[0].X == Fruit.X && Snake.Body[0].Y == Fruit.Y)
+            if (Snake.Body[Snake.HEAD].X == Fruit.X && Snake.Body[Snake.HEAD].Y == Fruit.Y)
             {
                 Score++;
                 Snake.Update(Width, Height);
@@ -87,7 +124,7 @@ namespace Snake
                     key = Snake.Direction == ConsoleKey.DownArrow ? Snake.Direction : key;
                     break;
                 case ConsoleKey.RightArrow:
-                    key =  Snake.Direction == ConsoleKey.LeftArrow ? Snake.Direction : key;
+                    key = Snake.Direction == ConsoleKey.LeftArrow ? Snake.Direction : key;
                     break;
                 case ConsoleKey.DownArrow:
                     key = Snake.Direction == ConsoleKey.UpArrow ? Snake.Direction : key;
@@ -98,7 +135,7 @@ namespace Snake
 
             return key;
         }
-        public void Update()
+        public void UpdateScene()
         {
             for (int i = 0; i < Height; i++)
             {
@@ -118,11 +155,12 @@ namespace Snake
                     }
                 }
             }
+
             DrawSnake();
         }
         public void DrawSnake()
         {
-            Board[Snake.Body[0].X, Snake.Body[0].Y] = Snake.Body[0].Value;
+            Board[Snake.Body[Snake.HEAD].X, Snake.Body[Snake.HEAD].Y] = Snake.Body[Snake.HEAD].Value;
 
             foreach (var point in Snake.Body)
             {
@@ -139,7 +177,7 @@ namespace Snake
         }
         public bool IsSnake(int x, int y)
         {
-            return Snake.Body[0].X == x && Snake.Body[0].Y == y;
+            return Snake.Body[Snake.HEAD].X == x && Snake.Body[Snake.HEAD].Y == y;
         }
         public void PrintBoard()
         {
@@ -183,6 +221,5 @@ namespace Snake
                 }
             }
         }
-
     }
 }

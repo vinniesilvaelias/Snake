@@ -8,18 +8,30 @@ namespace Snake
 {
     public class Snake
     {
-        //public Point Head { get; set; }
+        #region CONST
+        public const int HEAD = 0;
+        public const char BODY = '@';
+        #endregion
+
+        #region PROPRIETS
         public ConsoleKey Direction { get; set; }
         public IList<Point> Body { get; set; }
+        #endregion
+
+        #region CONSTRUCTOR
+
         public Snake(int x, int y)
         {
             Body = new List<Point>
             {
-                new Point(x, y, '@')
+                new Point(x, y, BODY)
             };
 
             Direction = ConsoleKey.UpArrow;
         }
+        #endregion
+
+        #region METHODS
         public void Move()
         {
             switch (Direction)
@@ -43,28 +55,28 @@ namespace Snake
         }
         public void Up()
         {
-            var newHead = new Point(Body[0].X, Body[0].Y - 1, Body[0].Value);
+            var newHead = new Point(Body[HEAD].X, Body[HEAD].Y - 1, Body[HEAD].Value);
             Body.Insert(0, newHead);
             Body.Remove(Body.Last());
         }
 
         public void Down()
         {
-            var newHead = new Point(Body[0].X, Body[0].Y + 1, Body[0].Value);
+            var newHead = new Point(Body[HEAD].X, Body[HEAD].Y + 1, Body[HEAD].Value);
             Body.Insert(0, newHead);
             Body.Remove(Body.Last());
         }
 
         public void Left()
         {
-            var newHead = new Point(Body[0].X -1, Body[0].Y, Body[0].Value);
+            var newHead = new Point(Body[HEAD].X -1, Body[HEAD].Y, Body[HEAD].Value);
             Body.Insert(0, newHead);
             Body.Remove(Body.Last());
         }
 
         public void Right()
         {
-            var newHead = new Point(Body[0].X + 1, Body[0].Y, Body[0].Value);
+            var newHead = new Point(Body[HEAD].X + 1, Body[HEAD].Y, Body[HEAD].Value);
             Body.Insert(0, newHead);
             Body.Remove(Body.Last());
         }
@@ -99,4 +111,6 @@ namespace Snake
             Body.Insert(Body.Count - 1, point);
         }
     }
+
+    #endregion
 }
