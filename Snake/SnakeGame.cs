@@ -53,11 +53,7 @@
 
         private void NextPlay()
         {
-            if (Snake != null)
-            {
-                Init(Width, Height);
-                Score = 0;
-            }
+            Restart();
 
             do
             {
@@ -65,6 +61,12 @@
 
             } while (!IsWall(Snake.Body[Snake.HEAD].X, Snake.Body[Snake.HEAD].Y));
 
+        }
+
+        private void Restart()
+        {
+            Init(Width, Height);
+            Score = 0;
         }
 
         private void End()
@@ -162,9 +164,9 @@
         {
             Board[Snake.Body[Snake.HEAD].X, Snake.Body[Snake.HEAD].Y] = Snake.Body[Snake.HEAD].Value;
 
-            foreach (var point in Snake.Body)
+            foreach (var body in Snake.Body)
             {
-                Board[point.X, point.Y] = point.Value;
+                Board[body.X, body.Y] = body.Value;
             }
         }
         public bool IsFruit(int x, int y)
